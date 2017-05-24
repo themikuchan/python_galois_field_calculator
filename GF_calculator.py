@@ -1,13 +1,21 @@
+def rm_zero(A):
+	while(A[0]==0):
+		if(len(A)>1):
+			A.remove(0)
+		else:
+			break
+	return A
+
+
 def add(Ax, Bx):
+	for x in xrange(len(Ax)-len(Bx)):
+		Bx.insert(0,0)	
 	Cx=[]
 	for x in xrange(len(Ax)):
 		Ci = Ax[x] ^ Bx[x]
 		Cx.append(Ci)
+	Cx = rm_zero(Cx)
 	return Cx
-
-def divide(Ax, Bx, Px):
-	print "Not yet implemented"
-	return 0
 
 def binary(A):
 	Cx=[]
@@ -69,10 +77,10 @@ def multiply(A, B, Px):
 	for x in xrange(len(prod)):
 		# print "yes"
 		insert = max_len - len(prod[x])
-		print insert
+		# print insert
 		for y in xrange(insert):
 			prod[x].insert(0,0)
-	print prod
+	# print prod
 	answer = []
 	for x in xrange(max_len):
 		ans = 0
@@ -82,18 +90,43 @@ def multiply(A, B, Px):
 			else:
 				ans ^= prod[y][x]
 		answer.append(ans)
-	return 0
+	answer = rm_zero(answer)
+	return answer
 
+def divide(Ax, Bx, Px):
+	ans = []
+	remainder = 0
+	while(True):
+		for x in xrange(1,2**len(Px),1):
+			div = multiply(Bx, [x], Px)
+			# print div
+			# print Ax
+			if(div[0]==Ax[0]):
+				insert = len(Ax) - len(div)
+				div +=[0]*insert
+				remainder = add(Ax,div)
+				ans.append(x)
+				break
+		# print len(remainder), len(Bx)
+		if(len(remainder)<len(Bx)):
+			break
+		else:
+			Ax = remainder
+	return ans
 
+def printArray(A):
+	string = ""
+	for x in xrange(len(A)):
+		string+=str(A[x])
+	print string
 
+Ax = raw_input("A(x): ")
+Bx = raw_input("B(x): ")
+Px = raw_input("P(x): ")
 
-# Ax = raw_input("A(x): ")
-# Bx = raw_input("B(x): ")
-# Px = raw_input("P(x): ")
-
-Ax = "1 0 7 6"
-Bx = "1 6 3"
-Px = "1 0 1 1"
+# Ax = "1 0 7 6"
+# Bx = "1 6 3"
+# Px = "1 0 1 1"
 
 Ax = Ax.split()
 Bx = Bx.split()
@@ -102,32 +135,36 @@ Px = Px.split()
 valid=True
 
 for x in xrange(len(Ax)):
-	# if(Ax[x].isdigit()):
-	# 	valid=False
-	# 	break
+	if(Ax[x].isdigit()==False):
+		valid=False
+		break
 	Ax[x]=int(Ax[x])
 
 for x in xrange(len(Bx)):
-	# if(Bx[x].isdigit()):
-	# 	valid=False
-	# 	break
+	if(Bx[x].isdigit()==False):
+		valid=False
+		break
 	Bx[x]=int(Bx[x])
 
 for x in xrange(len(Px)):
-	# if(Px[x].isdigit()):
-	# 	valid=False
-	# 	break
+	if(Px[x].isdigit()==False):
+		valid=False
+		break
 	Px[x]=int(Px[x])
+
+for x in xrange(len(Ax)):
+	if(Ax[x]>(2**(len(Px)-1)-1)):
+		valid=False
+		break
+
+for x in xrange(len(Bx)):
+	if(Bx[x]>(2**(len(Px)-1)-1)):
+		valid=False
+		break
 	
 if(valid==False):
+	print "Invalid input"
 	exit()
-
-if(len(Bx)<len(Ax)):
-	for x in xrange(len(Ax)-len(Bx)):
-		Bx.insert(0,0)	
-elif(len(Ax)<len(Bx)):
-	for x in xrange(len(Bx)-len(Ax)):
-		Ax.insert(0,0)
 
 # print Px
 
@@ -136,10 +173,29 @@ print "[1] A(x) + B(x)\n[2] A(x) - B(x)\n[3] A(x) x B(x)\n[4] A(x) / B(x)"
 choice = raw_input("Enter the number corresponding to your operation: ")
 if(choice == "1" or choice == "2"):
 	Cx = add(Ax, Bx)
-	print Ax
-	print Bx
-	print Cx
+	print "A(x) =",
+	printArray(Ax)
+	print "B(x) =",
+	printArray(Bx)
+	if(choice == "1"):
+		print "A(x) + B(x) =",
+		printArray(Cx)
+	elif(choice == "2"):
+		print "A(x) - B(x) =",
+		printArray(Cx)
 elif(choice == "3"):
-	x = multiply(Ax, Bx, Px)
+	Cx = multiply(Ax, Bx, Px)
+	print "A(x) =",
+	printArray(Ax)
+	print "B(x) =",
+	printArray(Bx)
+	print "A(x) x B(x) =",
+	printArray(Cx)
 elif(choice == "4"):
 	Cx = divide(Ax, Bx, Px)
+	print "A(x) =",
+	printArray(Ax)
+	print "B(x) =",
+	printArray(Bx)
+	print "A(x) / B(x) =",
+	printArray(Cx)
