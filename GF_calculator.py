@@ -112,7 +112,7 @@ def divide(Ax, Bx, Px):
 			break
 		else:
 			Ax = remainder
-	return ans
+	return ans, remainder
 
 def printArray(A):
 	string = ""
@@ -192,10 +192,12 @@ elif(choice == "3"):
 	print "A(x) x B(x) =",
 	printArray(Cx)
 elif(choice == "4"):
-	Cx = divide(Ax, Bx, Px)
+	Cx, remainder = divide(Ax, Bx, Px)
 	print "A(x) =",
 	printArray(Ax)
 	print "B(x) =",
 	printArray(Bx)
 	print "A(x) / B(x) =",
 	printArray(Cx)
+	print "Remainder =",
+	printArray(remainder)
